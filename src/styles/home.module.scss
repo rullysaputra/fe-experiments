@@ -1,0 +1,230 @@
+@use "sass:meta";
+@use "sass:map";
+
+$main-color: #454545;
+$xl: 87.5em; // 4k and hi-res desktop
+$lg: 60em; // 1080 and hi-res laptops
+$med: 29em; // hi-res tablets and low-res laptops
+$sm: 28em;// mobile and low-res tablets
+$xs: 20em; // mobile only
+
+$mobile: 'mobile';
+$desktop: 'desktop';
+$tv: 'tv';
+
+$breakpoint-map: (
+    $mobile: (
+        max-width: 839px,
+    ),
+    $desktop: (
+        min-width: 840px,
+    ),
+    $tv: (
+        min-width: $lg,
+    )
+);
+
+@mixin responsive($breakpoint) {
+    // inspect for convert into string
+    @if map.has-key($breakpoint-map, $breakpoint) {
+        @media #{meta.inspect(map.get($breakpoint_map, $breakpoint))}  { 
+            @content
+        }
+    } 
+    @else {
+        @warn "key not registered"
+    }
+}
+
+.home_container{
+    display: flex;
+    transition: all 0.5s allow-discrete;
+
+    .header_item{
+        @include responsive($mobile) {
+            padding: 16px;
+            animation: fadeIn 0.5s ease-in-out forwards;
+       }
+    }
+    .hide{
+        opacity: 0;
+        background-color: $main-color;
+        display: none;
+        transform: translateY(5px);
+    }
+    .header_item_hide{
+        @include responsive($mobile) {
+            padding: 16px;
+            animation: fadeOut 0.5s ease-in-out forwards;
+       }
+    }
+    @include responsive($desktop) {
+        background-color: yellow;
+    }
+
+    @include responsive($mobile) {
+         flex-direction: column;
+    }
+    @include responsive($tv) {
+        background-color: green;
+        gap: 4px;
+   }
+  
+    .action_item{
+        background-color: green;
+    }
+}
+
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        background-color: $main-color;
+        transform: translateY(5px);
+    }
+    100% {
+        opacity: 1;
+        background-color: red;
+        transform: translateY(0);
+    }
+}
+
+
+@keyframes fadeOut {
+    0% {
+        background-color: red;
+    }
+    100% {
+        opacity: 0;
+        background-color: $main-color;
+        display: none;
+        transform: translateY(5px);
+    }
+}
+
+
+.grid_container{
+    display: grid;
+    grid-template-columns: repeat(4, 0.5fr);
+    gap: 24px;
+
+    @include responsive($mobile){
+        grid-template-columns: 1fr;
+    }
+}
+
+.shape {
+    width: 200px;
+    height: 200px;
+    background-color: red;
+}
+
+.egg_bounce{
+    animation: bounce 2s linear;
+}
+
+.cracked_egg{
+    animation: cracked 0.5s forwards infinite;
+}
+
+.show_types {
+    position: sticky;
+    bottom: 10px;
+    margin: auto;
+    text-align: center;
+    background-color: cadetblue;
+    border-radius: 12px;
+    color: white;
+    padding: 8px 12px;
+    width: fit-content;
+
+    @include responsive($desktop) {
+        left: 20px;
+        margin: 0;
+    }
+}
+
+.show_types:has(+ .show_footer){
+    bottom: 50px;
+}
+
+.show_footer{
+    position: sticky;
+    bottom: 10px;
+    background-color: red;
+}
+
+@keyframes bounce {
+    0%{
+        transform: translate(2px,10px) rotate(20deg)
+    }
+    10%{
+        transform: translate(0px, 0px) rotate(0deg)
+    }
+    20%{
+        transform: translate(-2px, 10px) rotate(-20deg) scaleY(1.1)
+    }
+    30%{
+        transform: translate(0px, 0px) rotate(0deg)
+    }
+    40%{
+        transform: translate(4px, 10px) rotate(20deg) scaleY(1.1)
+    }
+    50%{
+        transform: translate(0px, 0px) rotate(0deg) 
+    }
+    60%{
+        transform: translate(1px, 1px) rotate(0deg)
+    }
+    70%{
+        transform: translate(-1px, -20px) rotate(-1deg)
+    }
+    80%{
+        transform: translate(-3px, 0px) rotate(1deg)
+    }
+    90%{
+        transform: translate(3px, 2px) rotate(0deg) 
+    }
+    100%{
+        transform: translate(1px, -1px) rotate(1deg)
+    }
+    // 0% {
+    //     transform: translateY(0)
+    // }
+    // 20%{
+    //     transform: translateY(-20px)
+    // }
+    // 30% {
+    //     transform: translateY(0)
+    // }
+    // 40% {
+    //     transform: translateY(-10px)
+    // }
+    // 50% {
+    //     transform: translateY(0)
+    // }
+    // 60%{
+    //     transform: translate(1px, 1px) rotate(0deg)
+    // }
+    // 70%{
+    //     transform: translate(-1px, -2px) rotate(-1deg)
+    // }
+    // 80%{
+    //     transform: translate(-3px, 0px) rotate(1deg)
+    // }
+    // 90%{
+    //     transform: translate(3px, 2px) rotate(0deg)
+    // }
+    // 100%{
+    //     transform: translate(1px, -1px) rotate(1deg)
+    // }
+}
+
+@keyframes cracked {
+    from {
+        transform: scaleX(1.1);
+    } to {
+        transform: scaleX(1);
+    }
+}
+

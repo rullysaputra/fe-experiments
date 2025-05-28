@@ -1,0 +1,42 @@
+{
+  "name": "all-experiments",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "dev": "vite --port=5173",
+    "build": "vite build",
+    "serve": "vite preview",
+    "start": "vite",
+    "asbuild:debug": "asc assembly/index.ts --target debug",
+    "asbuild:release": "asc assembly/index.ts --target release",
+    "asbuild": "pnpm run asbuild:debug && pnpm run asbuild:release",
+    "test": "node tests"
+  },
+  "devDependencies": {
+    "@tanstack/router-plugin": "^1.91.1",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@types/react-lottie": "^1.2.10",
+    "@vitejs/plugin-react": "^4.3.2",
+    "assemblyscript": "^0.27.31",
+    "vite": "^6.0.3"
+  },
+  "dependencies": {
+    "@tanstack/react-router": "^1.91.3",
+    "@tanstack/router-devtools": "^1.91.3",
+    "assemblyscript": "^0.27.31",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-lottie": "^1.2.10",
+    "sass": "^1.83.0",
+    "socket.io-client": "^4.8.1"
+  },
+  "exports": {
+    ".": {
+      "import": "./build/release.js",
+      "types": "./build/release.d.ts"
+    }
+  }
+}

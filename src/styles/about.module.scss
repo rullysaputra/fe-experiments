@@ -1,0 +1,20 @@
+.sticky_footer_button{
+    position: sticky;
+    bottom: 0;
+    background-color: red;
+    margin: 0 20px;
+}
+
+.card{
+    padding: 20px;
+    background-color: lightblue;
+    position: relative;
+    .number{
+        position: absolute;
+        left: 50%;
+        top: -20px;
+        background-color: red;
+        padding: 4px 12px;
+        border-radius: 50%;
+    }
+}
