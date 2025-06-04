@@ -11,17 +11,12 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as WebsocketImport } from './routes/websocket'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
+import { Route as WebsocketIndexImport } from './routes/websocket/index'
+import { Route as WebsocketIdImport } from './routes/websocket/$id'
 
 // Create/Update Routes
-
-const WebsocketRoute = WebsocketImport.update({
-  id: '/websocket',
-  path: '/websocket',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const AboutRoute = AboutImport.update({
   id: '/about',
@@ -32,6 +27,18 @@ const AboutRoute = AboutImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const WebsocketIndexRoute = WebsocketIndexImport.update({
+  id: '/websocket/',
+  path: '/websocket/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const WebsocketIdRoute = WebsocketIdImport.update({
+  id: '/websocket/$id',
+  path: '/websocket/$id',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -53,11 +60,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
-    '/websocket': {
-      id: '/websocket'
+    '/websocket/$id': {
+      id: '/websocket/$id'
+      path: '/websocket/$id'
+      fullPath: '/websocket/$id'
+      preLoaderRoute: typeof WebsocketIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/websocket/': {
+      id: '/websocket/'
       path: '/websocket'
       fullPath: '/websocket'
-      preLoaderRoute: typeof WebsocketImport
+      preLoaderRoute: typeof WebsocketIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -68,41 +82,46 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/websocket': typeof WebsocketRoute
+  '/websocket/$id': typeof WebsocketIdRoute
+  '/websocket': typeof WebsocketIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/websocket': typeof WebsocketRoute
+  '/websocket/$id': typeof WebsocketIdRoute
+  '/websocket': typeof WebsocketIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/websocket': typeof WebsocketRoute
+  '/websocket/$id': typeof WebsocketIdRoute
+  '/websocket/': typeof WebsocketIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/websocket'
+  fullPaths: '/' | '/about' | '/websocket/$id' | '/websocket'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/websocket'
-  id: '__root__' | '/' | '/about' | '/websocket'
+  to: '/' | '/about' | '/websocket/$id' | '/websocket'
+  id: '__root__' | '/' | '/about' | '/websocket/$id' | '/websocket/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  WebsocketRoute: typeof WebsocketRoute
+  WebsocketIdRoute: typeof WebsocketIdRoute
+  WebsocketIndexRoute: typeof WebsocketIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  WebsocketRoute: WebsocketRoute,
+  WebsocketIdRoute: WebsocketIdRoute,
+  WebsocketIndexRoute: WebsocketIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -117,7 +136,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
-        "/websocket"
+        "/websocket/$id",
+        "/websocket/"
       ]
     },
     "/": {
@@ -126,8 +146,11 @@ export const routeTree = rootRoute
     "/about": {
       "filePath": "about.tsx"
     },
-    "/websocket": {
-      "filePath": "websocket.tsx"
+    "/websocket/$id": {
+      "filePath": "websocket/$id.tsx"
+    },
+    "/websocket/": {
+      "filePath": "websocket/index.tsx"
     }
   }
 }

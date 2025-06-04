@@ -1,22 +1,24 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useRef, useEffect, useState } from "react";
 
-import s from "../styles/websocket.module.scss";
-import BidCard from "../components/BidCard";
-import useSocketIo from "../hooks/useSocketIo";
+import s from "../../styles/websocket.module.scss";
+import BidCard from "../../components/BidCard";
+import useSocketIo from "../../hooks/useSocketIo";
 
-export const Route = createFileRoute("/websocket")({
+export const Route = createFileRoute("/websocket/")({
   component: WebSocketComponent,
 });
 
 function WebSocketComponent() {
   // const ws = useRef(new WebSocket("ws://localhost:8080"));
-  const { socket } = useSocketIo("http://localhost:8080");
+  const { socket, initSocket } = useSocketIo("http://localhost:8080");
   const [data, setData] = useState();
   const [storedDatabase, setStoredDatabase] = useState([]);
   const [channelId, setChannelId] = useState();
   const [name, setName] = useState("");
   const [token, setToken] = useState(3);
+
+  const navigate = useNavigate({ from: "/websocket" });
 
   // const initWs = (n = 1) => {
   //   const ab = new AbortController();
@@ -90,15 +92,15 @@ function WebSocketComponent() {
   }, []);
 
   useEffect(() => {
-    socket.on("connect", (socket) => {
+    socket?.on("connect", (socket) => {
       console.log("connect", socket);
     });
 
-    socket.on("items_update", (socket) => {
+    socket?.on("items_update", (socket) => {
       setStoredDatabase(socket.items);
     });
 
-    socket.on("item_update", (socket) => {
+    socket?.on("item_update", (socket) => {
       console.log("item update", socket);
 
       const currentDataStore = [...storedDatabase];
@@ -114,7 +116,7 @@ function WebSocketComponent() {
       ];
       setStoredDatabase(dataStore);
     });
-  }, []);
+  }, [socket]);
 
   // useEffect(() => {
   //   if (storedDatabase.length > 0) {
@@ -178,7 +180,7 @@ function WebSocketComponent() {
     ];
     setToken((prevState) => prevState - 1);
     setStoredDatabase(dataStore);
-    socket.emit("place_bid", {
+    socket?.emit("place_bid", {
       bidderName: name,
       itemId: id,
     });
@@ -196,6 +198,7 @@ function WebSocketComponent() {
       <p>websocket</p>
       <p>random: {data}</p>
       <p>Token: {token}</p>
+      <button onClick={initSocket}>Init socket</button>
       <div>
         <label>Name</label>
         <input
@@ -214,7 +217,11 @@ function WebSocketComponent() {
           //   <p>{data.name}</p>
           //   <p>{data.content?.message}</p>
           // </div>
-          <BidCard data={data} sendData={sendBidData} />
+          <BidCard
+            data={data}
+            // sendData={() => navigate({ to: `/websocket/${data.id}` })}
+            sendData={sendBidData}
+          />
         ))}
       </div>
       {/* <p>Channel ID: {channelId}</p>
