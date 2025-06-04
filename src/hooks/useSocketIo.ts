@@ -1,24 +1,30 @@
-import { useState } from "react";
-import { io, Socket } from "socket.io-client";
+import { useEffect, useRef, useState } from "react";
+import { io, ManagerOptions, Socket, SocketOptions } from "socket.io-client";
 import { ClientToServerEvents, ServerToClientEvents } from "../types";
 
-type TConfig = {
-  autoInitialize?: boolean;
-};
-const useSocketIo = (url: string, config?: TConfig) => {
-  const { autoInitialize  = true} = config || {};
+const useSocketIo = (
+  url: string,
+  opts?: Partial<ManagerOptions & SocketOptions>
+) => {
+  const socketIo = useRef<Socket<ServerToClientEvents, ClientToServerEvents>>(
+    io(url, opts)
+  );
 
-  const [socketIo, setSocketIo] = useState<Socket<
-    ServerToClientEvents,
-    ClientToServerEvents
-  > | null>(autoInitialize ? io(url) : null);
+  const [isConnectionEstablished, setIsConnectionEstablished] = useState(false);
+
+  useEffect(() => {
+    socketIo?.current.on("connect", () => {
+      setIsConnectionEstablished(true);
+    });
+  }, [socketIo]);
 
   const initSocket = () => {
-    if(!autoInitialize) setSocketIo(io(url));
+    socketIo?.current.connect();
   };
 
   return {
-    socket: socketIo,
+    socket: socketIo.current,
+    isConnectionEstablished,
     initSocket,
   };
 };

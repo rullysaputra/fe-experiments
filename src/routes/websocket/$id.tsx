@@ -9,22 +9,28 @@ export const Route = createFileRoute("/websocket/$id")({
 function RouteComponent() {
   const { id } = Route.useParams();
   const [data, setData] = useState({});
-  const { socket, initSocket } = useSocketIo("http://localhost:8080", {
-    autoInitialize: true,
-  });
+  const { socket, initSocket, isConnectionEstablished } = useSocketIo(
+    "http://localhost:8080",
+    {
+      autoConnect: false,
+    }
+  );
 
   useEffect(() => {
-    socket?.on("connect", () => {
-      socket.emit("initial_inventory_detail", {
-        itemId: id,
-      });
+    socket?.emit("initial_inventory_detail", {
+      itemId: id,
     });
 
     socket?.on("get_inventory_detail", (data) => {
       console.log("data", data);
       setData(data);
     });
-  }, [socket]);
+    socket?.on("disconnect", (reason, details) => {
+      console.log("reason", reason);
+      console.log("details", details);
+      //   alert("disconnect");
+    });
+  }, [isConnectionEstablished]);
 
   return (
     <div>
